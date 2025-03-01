@@ -1,73 +1,27 @@
-"use client"
+// src/app/cart/page.tsx
+'use client';
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Trash2, Plus, Minus, ArrowRight } from "lucide-react"
-
-type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
-}
+import { useCart } from '@/contexts/CartContext';
+import CheckoutButton from '@/components/CheckoutButton';
+import CartItem from '@/components/CartItem';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function CartPage() {
-  // Sample cart data
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Hydrating Facial Cleanser",
-      price: 18.99,
-      quantity: 1,
-      image: "/placeholder.svg"
-    },
-    {
-      id: 2,
-      name: "Brightening Serum",
-      price: 24.99,
-      quantity: 2,
-      image: "/placeholder.svg"
-    }
-  ])
-
-  // Update quantity
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return
-    
-    setCartItems(prev => 
-      prev.map(item => 
-        item.id === id 
-          ? { ...item, quantity: newQuantity } 
-          : item
-      )
-    )
-  }
-
-  // Remove item
-  const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id))
-  }
-
-  // Calculate subtotal
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity, 
-    0
-  )
+  const { state, dispatch } = useCart();
   
-  // Shipping fee
-  const shipping = subtotal > 50 ? 0 : 5.99
+  // Calculate shipping fee
+  const shipping = state.subtotal > 50 ? 0 : 5.99;
   
   // Total
-  const total = subtotal + shipping
-
+  const total = state.subtotal + shipping;
+  
   return (
     <div className="bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
         
-        {cartItems.length === 0 ? (
+        {state.items.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <h2 className="text-xl mb-4">Your cart is empty</h2>
             <p className="text-gray-600 mb-6">Looks like you haven't added any products to your cart yet.</p>
@@ -90,63 +44,8 @@ export default function CartPage() {
                   <div className="col-span-2 text-center">Total</div>
                 </div>
                 
-                {cartItems.map((item) => (
-                  <div key={item.id} className="p-4 border-b last:border-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                    <div className="md:col-span-6 flex items-center">
-                      <div className="w-20 h-20 mr-4 relative">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          className="object-cover rounded"
-                          style={{ objectFit: 'cover' }}
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">{item.name}</h3>
-                        <button 
-                          onClick={() => removeItem(item.id)}
-                          className="text-sm text-red-600 flex items-center mt-1"
-                        >
-                          <Trash2 className="h-3 w-3 mr-1" /> Remove
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2 text-center">
-                      <div className="md:hidden inline font-medium mr-2">Price:</div>
-                      ${item.price.toFixed(2)}
-                    </div>
-                    
-                    <div className="md:col-span-2 flex items-center justify-center">
-                      <div className="md:hidden inline font-medium mr-2">Quantity:</div>
-                      <div className="flex items-center border rounded">
-                        <button 
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </button>
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                          className="w-10 text-center border-x focus:outline-none py-1"
-                        />
-                        <button 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="px-2 py-1 text-gray-600 hover:bg-gray-100"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2 text-center font-medium">
-                      <div className="md:hidden inline font-medium mr-2">Total:</div>
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </div>
-                  </div>
+                {state.items.map((item) => (
+                  <CartItem key={item.id} item={item} />
                 ))}
               </div>
               
@@ -155,10 +54,10 @@ export default function CartPage() {
                   ← Continue Shopping
                 </Link>
                 <button 
-                  onClick={() => setCartItems([])}
+                  onClick={() => dispatch({ type: 'CLEAR_CART' })}
                   className="text-red-600 hover:text-red-800 flex items-center"
                 >
-                  <Trash2 className="h-4 w-4 mr-1" /> Clear Cart
+                  Clear Cart
                 </button>
               </div>
             </div>
@@ -171,7 +70,7 @@ export default function CartPage() {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>${state.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
@@ -188,17 +87,15 @@ export default function CartPage() {
                   </div>
                 </div>
                 
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700">
-                  Proceed to Checkout
-                </button>
+                <CheckoutButton />
                 
                 <div className="mt-6">
                   <h3 className="font-semibold mb-2">We Accept</h3>
                   <div className="flex space-x-2">
-                    <img src="/placeholder.svg" alt="Visa" className="h-8" />
-                    <img src="/placeholder.svg" alt="Mastercard" className="h-8" />
-                    <img src="/placeholder.svg" alt="PayPal" className="h-8" />
-                    <img src="/placeholder.svg" alt="Apple Pay" className="h-8" />
+                    <img src="/images/payments/visa.svg" alt="Visa" className="h-8" />
+                    <img src="/images/payments/mastercard.svg" alt="Mastercard" className="h-8" />
+                    <img src="/images/payments/paypal.svg" alt="PayPal" className="h-8" />
+                    <img src="/images/payments/applepay.svg" alt="Apple Pay" className="h-8" />
                   </div>
                 </div>
               </div>
@@ -207,5 +104,5 @@ export default function CartPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -6,14 +6,50 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base Colors */
+  --background: #E5D5C3; /* Warm Beige */
+  --foreground: #4A4A4A; /* Deep Charcoal */
+  
+  /* Custom Color Palette */
+  --sage-green: #A7B79C;
+  --warm-beige: #E5D5C3;
+  --stone-gray: #B0A9A0;
+  --olive-green: #6B705C;
+  --soft-sand: #D9C5B2;
+  --deep-charcoal: #4A4A4A;
+  
+  /* Functional Colors */
+  --primary: var(--sage-green);
+  --primary-dark: var(--olive-green);
+  --primary-light: #B8C5AF; /* Lighter Sage */
+  --secondary: var(--stone-gray);
+  --accent: var(--soft-sand);
+  --neutral: var(--stone-gray);
+  --neutral-light: #E8E6E3; /* Lighter Stone */
+  
+  /* UI Elements */
+  --button-bg: var(--olive-green);
+  --button-hover: #5A5E4C; /* Darker Olive */
+  --button-text: #FFFFFF;
+  --card-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
+  --input-border: var(--stone-gray);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #3A3A3A;
+    --foreground: #F5F2EE;
+    
+    /* Adjusted for Dark Mode */
+    --primary: #8A9A80; /* Darker Sage */
+    --primary-dark: #555D4A; /* Darker Olive */
+    --primary-light: #9DAB91;
+    --button-bg: #555D4A;
+    --button-hover: #4A4F40;
+    --card-bg: #4A4A4A;
+    --input-bg: #4A4A4A;
+    --input-border: #5A5A5A;
   }
 }
 
@@ -21,4 +57,78 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom classes to override existing Tailwind blue classes */
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.bg-primary-dark {
+  background-color: var(--primary-dark) !important;
+}
+
+.bg-primary-light {
+  background-color: var(--primary-light) !important;
+}
+
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: var(--primary-dark) !important;
+}
+
+.hover\:text-primary-light:hover {
+  color: var(--primary-light) !important;
+}
+
+/* Replace the blue classes */
+.bg-blue-800 {
+  background-color: var(--primary-dark) !important;
+}
+
+.bg-blue-700 {
+  background-color: var(--primary-dark) !important;
+}
+
+.bg-blue-600 {
+  background-color: var(--button-bg) !important;
+}
+
+.bg-blue-100 {
+  background-color: var(--warm-beige) !important;
+}
+
+.bg-blue-50 {
+  background-color: var(--soft-sand) !important;
+}
+
+.text-blue-600 {
+  color: var(--primary-dark) !important;
+}
+
+.text-blue-200 {
+  color: var(--soft-sand) !important;
+}
+
+.hover\:bg-blue-700:hover {
+  background-color: var(--button-hover) !important;
+}
+
+.hover\:text-blue-800:hover {
+  color: var(--primary-dark) !important;
+}
+
+.hover\:text-blue-200:hover {
+  color: var(--neutral-light) !important;
+}
+
+.border-blue-700 {
+  border-color: var(--primary-dark) !important;
 }

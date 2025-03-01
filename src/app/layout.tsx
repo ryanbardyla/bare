@@ -1,9 +1,12 @@
+// src/app/layout.tsx
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import Navigation from "../components/Navigation"
-import Footer from "../components/Footer"
+import { CartProvider } from "@/contexts/CartContext"
+import Navigation from "@/components/Navigation"
+import Footer from "@/components/Footer"
+import { AuthProvider } from "@/providers/AuthProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,9 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <CartProvider>
+            <Navigation />
+            {children}
+            <Footer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )
