@@ -3,9 +3,11 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Menu, X, ShoppingCart, Search, User } from "lucide-react"
+import { useCartStore } from "../lib/store/cartStore"
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const itemCount = useCartStore((state) => state.getItemCount())
 
   return (
     <header className="bg-blue-800 text-white py-4 sticky top-0 z-50">
@@ -39,9 +41,11 @@ export default function Navigation() {
             <Link href="/cart" className="hover:text-blue-200">
               <div className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  0
-                </span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
               </div>
             </Link>
           </div>
@@ -51,9 +55,11 @@ export default function Navigation() {
             <Link href="/cart" className="hover:text-blue-200">
               <div className="relative">
                 <ShoppingCart className="h-5 w-5" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  0
-                </span>
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
               </div>
             </Link>
             <button

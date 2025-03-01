@@ -1,38 +1,22 @@
-// src/app/products/page.tsx
-'use client';
+// app/products/page.tsx
+import React from 'react'
+import { getAllProducts } from '../../lib/data/products'
+import ProductGrid from '../../components/ProductGrid'
 
-import { useState } from "react";
-import { useProducts } from "@/hooks/useProducts";
-import ProductCard from "@/components/ProductCard";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import ErrorMessage from "@/components/ErrorMessage";
-
-// Define the Product type
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  rating: number;
-  image: string;
-  description: string;
+export const metadata = {
+  title: 'Products | SkinGlow',
+  description: 'Browse our collection of natural, organic skincare products.',
 }
 
 export default function ProductsPage() {
-  const { products, isLoading, isError } = useProducts();
-  
-  if (isLoading) return <LoadingSpinner />;
-  if (isError) return <ErrorMessage message="Failed to load products" />;
+  const products = getAllProducts()
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Our Products</h1>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products && products.map((product: Product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+    <div className="bg-gray-50 py-8">
+      <div className="container mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-8">Our Products</h1>
+        <ProductGrid products={products} />
       </div>
     </div>
-  );
+  )
 }
